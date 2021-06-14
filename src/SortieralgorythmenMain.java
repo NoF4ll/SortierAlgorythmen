@@ -28,10 +28,17 @@ public class SortieralgorythmenMain {
 	static ArrayList<Long> quickZeit = new ArrayList<>();
 	// Quicksort Variablen
 	
+	static ArrayList<Long> mergeVergleiche = new ArrayList<>();
+	static ArrayList<Long> mergeVertausche = new ArrayList<>();
+	static ArrayList<Long> mergeZeit = new ArrayList<>();
+	
 	static long tauschoperationen;
 	static long vergleichoperationen;
 	static long beginTime;
 	static long endTime;
+	
+	static long mergeTauschoperationen = 0;
+	static long mergeVergleichoperationen = 0;
 
 	public static void main(String[] args) {
 		
@@ -51,6 +58,11 @@ public class SortieralgorythmenMain {
 				quickSort(unSort, 0, unSort.length - 1);
 				endTime = System.currentTimeMillis();
 				quickZeit.add(endTime-beginTime);
+				unSort = sortArray.clone();
+				beginTime = System.currentTimeMillis();
+				mergeSort(0, unSort.length-1, unSort);
+				endTime = System.currentTimeMillis();
+				mergeZeit.add(endTime-beginTime);
 			}
 			
 		output();
@@ -168,6 +180,44 @@ public class SortieralgorythmenMain {
 		
 	}
 	
+public static int[] mergeSort(int l, int r, int[] intArr) {
+        
+        if (l < r) {
+            int q = (l + r) / 2;
+            
+            mergeSort(l, q, intArr);
+            mergeSort(q + 1, r, intArr);
+            merge(l, q, r, intArr);
+        }
+        mergeVertausche.add(mergeTauschoperationen);
+        mergeVergleiche.add(mergeVergleichoperationen);
+        return intArr;
+    }
+
+    private static void merge(int l, int q, int r, int[] intArr) {
+    	
+        int[] arr = new int[intArr.length];
+        int i, j;
+        for (i = l; i <= q; i++) {
+            arr[i] = intArr[i];
+        }
+        for (j = q + 1; j <= r; j++) {
+            arr[r + q + 1 - j] = intArr[j];
+        }
+        i = l;
+        j = r;
+        for (int k = l; k <= r; k++) {
+        	mergeVergleichoperationen++;
+            if (arr[i] <= arr[j]) {
+            	mergeTauschoperationen++;
+                intArr[k] = arr[i];
+                i++;
+            } else {
+                intArr[k] = arr[j];
+                j--;
+            }
+        }
+    }
 	static long durchschnittBerechnung(ArrayList<Long> arrayList)
 	{
 		long a = 0;
@@ -179,15 +229,18 @@ public class SortieralgorythmenMain {
 	}
 	static void output()
 	{
-		System.out.println("Bubblesorttauschoperationen: " + durchschnittBerechnung(bubbleVertausche) + " Vergleichoperationen = "
-				+ durchschnittBerechnung(bubbleVergleiche) + " In " + (durchschnittBerechnung(bubbleZeit)) + " MilliSekunden");
+		System.out.println("Bubblesorttauschoperationen: " + durchschnittBerechnung(bubbleVertausche) + " Vergleichoperationen: "
+				+ durchschnittBerechnung(bubbleVergleiche) + " in " + (durchschnittBerechnung(bubbleZeit)) + " MilliSekunden");
 		
-		System.out.println("Selectiontauschoperationen: " + durchschnittBerechnung(selectionVertausche) + " Vergleichoperationen = "
-				+ durchschnittBerechnung(selectionVergleiche) + " In " + (durchschnittBerechnung(selectionZeit)) + " MilliSekunden");
+		System.out.println("Selectiontauschoperationen: " + durchschnittBerechnung(selectionVertausche) + " Vergleichoperationen: "
+				+ durchschnittBerechnung(selectionVergleiche) + " in " + (durchschnittBerechnung(selectionZeit)) + " MilliSekunden");
 		
-		System.out.println("Insertiontauschoperationen: " + durchschnittBerechnung(insertionVertausche) + " Vergleichoperationen = "
-				+ durchschnittBerechnung(insertionVergleiche) + " In " + (durchschnittBerechnung(insertionZeit)) + " MilliSekunden");
-		System.out.println("Quicktauschoperationen: " + durchschnittBerechnung(quickVertausche) + " Vergleichoperationen = "
-				+ durchschnittBerechnung(quickVergleiche) + " In " + (durchschnittBerechnung(quickZeit)) + " MilliSekunden");
+		System.out.println("Insertiontauschoperationen: " + durchschnittBerechnung(insertionVertausche) + " Vergleichoperationen: "
+				+ durchschnittBerechnung(insertionVergleiche) + " in " + (durchschnittBerechnung(insertionZeit)) + " MilliSekunden");
+		System.out.println("Quicktauschoperationen: " + durchschnittBerechnung(quickVertausche) + " Vergleichoperationen: "
+				+ durchschnittBerechnung(quickVergleiche) + " in " + (durchschnittBerechnung(quickZeit)) + " MilliSekunden");
+		
+		System.out.println("Mergetauschoperationen: " + durchschnittBerechnung(mergeVertausche) + " Vergleichoperationen: "
+				+ durchschnittBerechnung(mergeVergleiche) + " in " + (durchschnittBerechnung(mergeZeit)) + " MilliSekunden");
 	}
 }
